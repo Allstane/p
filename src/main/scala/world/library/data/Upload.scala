@@ -1,4 +1,4 @@
-package ru.kapinuss.lib.data
+package world.library.data
 
 case class Upload(id: Int,
                   book: Int,

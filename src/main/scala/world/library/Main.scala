@@ -1,4 +1,4 @@
-package ru.kapinuss.lib
+package world.library
 
 import cats.effect.{ExitCode, IO, IOApp}
 import com.comcast.ip4s._
@@ -8,10 +8,11 @@ import org.http4s.ember.server._
 import org.http4s.server.middleware._
 import pureconfig.generic.auto._
 import pureconfig.ConfigSource
-import ru.kapinuss.lib.custom.DAO._
+import world.library.custom.DAO._
 import org.slf4j.{Logger, LoggerFactory}
-import ru.kapinuss.lib.data.util.Config
-import ru.kapinuss.lib.custom.Routes.htmlRoutes
+import world.library.custom.Routes.htmlRoutes
+import world.library.data.util.Config
+
 import scala.concurrent.duration.DurationInt
 
 

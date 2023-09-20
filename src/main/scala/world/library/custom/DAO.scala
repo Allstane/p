@@ -1,13 +1,14 @@
-package ru.kapinuss.lib.custom
+package world.library.custom
 
 import doobie._
 import doobie.implicits._
 import cats.effect.{IO, Resource}
 import cats.effect.unsafe.implicits.global
 import doobie.hikari.HikariTransactor
-import ru.kapinuss.lib.Main.{config, logger}
-import ru.kapinuss.lib.data._
-import ru.kapinuss.lib.data.auth.{RegData, User}
+import world.library.Main.{config, logger}
+import world.library.data
+import world.library.data.auth.{RegData, User}
+import world.library.data.{Book, BookF, Chapter, Creator, Language, Metabook, MetabookF, Note, RawText, Tag, TagInUse}
 
 object DAO {
 
@@ -65,7 +66,7 @@ object DAO {
     else 0
 
   def getBookF(id: Int)(h: HikariTransactor[IO]): IO[BookF] =
-    getBook(id)(h).flatMap(book => getChapters(id)(h).map(chapters => BookF(book, chapters)))
+    getBook(id)(h).flatMap(book => getChapters(id)(h).map(chapters => data.BookF(book, chapters)))
 
   def insertCreator(c: Creator, owner: Int)(h: HikariTransactor[IO]): Int = {
     logger.info(s"Owner: $owner $c")
@@ -161,7 +162,7 @@ object DAO {
         case Some(m) => getPublicTags(m.id)(h)
         case None => IO(List.empty)
       }
-    } yield MetabookF(metabook.get, books, tags)
+    } yield data.MetabookF(metabook.get, books, tags)
   }
 
   def getBookSize(book: Int)(h: HikariTransactor[IO]): IO[Option[Int]] =

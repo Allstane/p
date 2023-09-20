@@ -1,6 +1,6 @@
-package ru.kapinuss.lib.templates
+package world.library.templates
 
-import ru.kapinuss.lib.data.Book
+import world.library.data.Book
 
 object Index {
   def template(books: List[Book]): String =

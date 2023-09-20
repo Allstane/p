@@ -1,4 +1,4 @@
-package ru.kapinuss.lib.data.auth
+package world.library.data.auth
 
 trait Role
 

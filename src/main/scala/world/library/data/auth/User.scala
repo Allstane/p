@@ -1,4 +1,4 @@
-package ru.kapinuss.lib.data.auth
+package world.library.data.auth
 
 import cats.effect.IO
 import org.http4s.Request

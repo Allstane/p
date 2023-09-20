@@ -1,13 +1,13 @@
-package ru.kapinuss.lib.custom
+package world.library.custom
 
 import cats.effect.IO
 import doobie.hikari.HikariTransactor
 import org.http4s.dsl.io.{->, /, GET, Ok, Root}
 import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
-import ru.kapinuss.lib.custom.DAO._
+import DAO._
 import play.twirl.api.Html
-import ru.kapinuss.lib.templates.Index.template
+import world.library.templates.Index.template
 import org.http4s.twirl._
 
 object Routes {
