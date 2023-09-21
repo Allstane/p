@@ -1,4 +1,4 @@
-package ru.kapinuss.lib.data.util
+package world.library.data.util
 
 sealed trait AuthMethod
 

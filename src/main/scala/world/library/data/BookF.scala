@@ -1,4 +1,4 @@
-package ru.kapinuss.lib.data
+package world.library.data
 
 case class BookF(book: Option[Book], chapters: List[Chapter]) {
   def size: Int = chapters.size

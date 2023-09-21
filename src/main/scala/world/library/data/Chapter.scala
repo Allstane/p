@@ -1,4 +1,4 @@
-package ru.kapinuss.lib.data
+package world.library.data
 
 case class Chapter(id: Int, book: Int, title: String, head: Option[Int], txt: Option[String])
 
