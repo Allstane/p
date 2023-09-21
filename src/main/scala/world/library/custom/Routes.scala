@@ -20,7 +20,7 @@ object Routes {
     val authors: List[Creator] = getAuthors(xa)
 
     HttpRoutes.of[IO] {
-      case GET -> Root => Ok(Html(Index.template(books, metabooks, authors)))
+      case GET -> Root => Ok(Html(Index(books, metabooks, authors).currentHtml))
       case GET -> Root / IntVar(lbId) / IntVar(rbId) / IntVar(chId) => Ok(s"$lbId $rbId $chId")
     }
   }

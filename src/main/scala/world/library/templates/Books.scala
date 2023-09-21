@@ -2,7 +2,7 @@ package world.library.templates
 
 import world.library.data.{Book, Creator, Metabook}
 
-case class Index(books: List[Book], metabooks: List[Metabook], authors: List[Creator]) extends Template {
+case class Books(books: List[Book], metabooks: List[Metabook], authors: List[Creator]) extends Template {
   val content: String = metabooks.map(m => {
     val ul: String = s"<p align='center'> <table width='600'> <tr> <td> " +
       s"${m.title} (${authors.find(a => a.id == m.author).get.english_name.get})<ul>"
