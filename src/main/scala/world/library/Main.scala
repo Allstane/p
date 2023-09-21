@@ -25,7 +25,7 @@ object Main extends IOApp {
 
   val version: String = getClass.getPackage.getImplementationVersion
 
-  logger.info(s"Application Library-view v.${version} started with $config")
+  logger.info(s"Application Library-view v.$version started with $config")
 
   def run(args: List[String]): IO[ExitCode] = transactor.use { xa: HikariTransactor[IO] =>
 
@@ -34,7 +34,7 @@ object Main extends IOApp {
       .withAllowMethodsIn(Set(Method.GET, Method.POST))
       .withAllowCredentials(false)
       .withMaxAge(1.day)
-      .apply(htmlRoutes(xa).orNotFound)
+      .apply(htmlRoutes(version)(xa).orNotFound)
 
     EmberServerBuilder.default[IO].withHost(Host.fromString(config.host).get).withPort(Port.fromInt(config.port).get)
       .withHttpApp(corsService).build.use(_ => IO.never).as(ExitCode.Success)
