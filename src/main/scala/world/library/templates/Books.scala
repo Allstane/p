@@ -1,15 +1,15 @@
 package world.library.templates
 
-import world.library.data.{Book, Creator, Metabook}
+import world.library.data.{Book, Chapter, Creator, Metabook}
 
-case class Books(books: List[Book], metabooks: List[Metabook], authors: List[Creator]) extends Template {
-  val content: String = metabooks.map(m => {
-    val ul: String = s"<p align='center'> <table width='600'> <tr> <td> " +
-      s"${m.title} (${authors.find(a => a.id == m.author).get.english_name.get})<ul>"
-    val li: String = books.filter(b => b.metabook == m.id).map(b => s"<li>${b.title} (${b.author})</li>").mkString
-    ul + li + "</ul></td></tr></table></p>"
+case class Books(leftBook: Book, rightBook: Book, metabook: Metabook, author: Creator, currentChapters: List[Chapter])
+  extends Template {
+  val content: String = {
+    val table: String = s"<p align='center'> <table width='600'> " +
+      s"<tr> <td> ${leftBook.title} </td> <td> ${rightBook.title} </td> </tr>"
+    val chapters: String = "Empty"
+    table + chapters + "</table></p>"
   }
-  ).mkString
 
   val currentHtml: String = html(content)
 }

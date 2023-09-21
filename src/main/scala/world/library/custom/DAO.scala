@@ -30,6 +30,10 @@ object DAO {
   def getChapters(bId: Int)(h: HikariTransactor[IO]): IO[List[Chapter]] =
     sql"select id, book, title, head, txt from chapters where book = $bId order by id".query[Chapter].to[List].transact(h)
 
+  def getChapters(h: HikariTransactor[IO]): List[Chapter] =
+    sql"select id, book, title, head, txt from chapters order by id"
+      .query[Chapter].to[List].transact(h).unsafeRunSync()
+
   def getChapter(chId: Int, bId: Int)(h: HikariTransactor[IO]): IO[Option[Chapter]] =
     sql"select * from chapters where book = $bId and id = $chId order by id".query[Chapter].option.transact(h)
 

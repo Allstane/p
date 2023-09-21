@@ -7,9 +7,9 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import DAO._
 import play.twirl.api.Html
-import world.library.templates.Index
+import world.library.templates.{Books, Index}
 import org.http4s.twirl._
-import world.library.data.{Book, Creator, Metabook}
+import world.library.data.{Book, Chapter, Creator, Metabook}
 
 object Routes {
 
@@ -18,10 +18,17 @@ object Routes {
     val books: List[Book] = getBooks()(xa).sortBy(_.metabook)
     val metabooks: List[Metabook] = getMetabooks(xa)
     val authors: List[Creator] = getAuthors(xa)
+    val chapters: List[Chapter] = getChapters(xa)
 
     HttpRoutes.of[IO] {
       case GET -> Root => Ok(Html(Index(books, metabooks, authors).currentHtml))
-      case GET -> Root / IntVar(lbId) / IntVar(rbId) / IntVar(chId) => Ok(s"$lbId $rbId $chId")
+      case GET -> Root / IntVar(lbid) / IntVar(rbid) =>
+        val leftBook: Book = books.find(b => b.id == lbid).get
+        val rightBook: Book = books.find(b => b.id == rbid).get
+        val metabook: Metabook = metabooks.find(m => m.id == leftBook.metabook).get
+        val author: Creator = authors.find(a => a.id == metabook.author).get
+        val currentChapters: List[Chapter] = chapters.filter(ch => ch.book == leftBook.id || ch.book == rightBook.id)
+        Ok(Html(Books(leftBook, rightBook, metabook, author, currentChapters).currentHtml))
     }
   }
 
