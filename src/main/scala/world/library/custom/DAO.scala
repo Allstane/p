@@ -30,13 +30,18 @@ object DAO {
   def getChapters(bId: Int)(h: HikariTransactor[IO]): IO[List[Chapter]] =
     sql"select id, book, title, head, txt from chapters where book = $bId order by id".query[Chapter].to[List].transact(h)
 
-  def getChapter(chId: Int, bId: Int)(h: HikariTransactor[IO]): IO[Option[Chapter]] =
-    sql"select * from chapters where book = $bId and id = $chId order by id".query[Chapter].option.transact(h)
+  def getChapters(h: HikariTransactor[IO]): List[Chapter] =
+    sql"select id, book, title, head, txt from chapters order by id"
+      .query[Chapter].to[List].transact(h).unsafeRunSync()
+
+  def getChapter(chId: Int, bId: Int)(h: HikariTransactor[IO]): Option[Chapter] =
+    sql"select * from chapters where book = $bId and id = $chId"
+      .query[Chapter].option.transact(h).unsafeRunSync()
 
   def getBook(id: Int)(h: HikariTransactor[IO]): IO[Option[Book]] =
     sql"select * from books where id = $id;".query[Book].option.transact(h)
 
-  def getBooks(author: Int)(h: HikariTransactor[IO]): List[Book] = {
+  def getBooks(author: Int = 0)(h: HikariTransactor[IO]): List[Book] = {
     val query: Fragment = if (author == 0) sql"select * from books where is_visible = true"
     else sql"select * from books where metabook in (select id from metabooks where author = $author) and is_visible = true"
     query.query[Book].to[List].transact(h).unsafeRunSync()
@@ -70,7 +75,7 @@ object DAO {
 
   def insertCreator(c: Creator, owner: Int)(h: HikariTransactor[IO]): Int = {
     logger.info(s"Owner: $owner $c")
-    sql"insert into creators(id, english_name, russian_name, german_name, original_language, birth_date, death_date, is_author, is_translator, owner) values ( (select max(id) from creators)+1 ,${c.english_name}, ${c.russian_name}, ${c.german_name}, ${c.original_language}, ${c.birth_date}, ${c.death_date}, ${c.is_author}, ${c.is_translator}, ${owner});"
+    sql"insert into creators(id, english_name, russian_name, german_name, original_language, birth_date, death_date, is_author, is_translator, owner) values ( (select max(id) from creators)+1 ,${c.english_name}, ${c.russian_name}, ${c.german_name}, ${c.original_language}, ${c.birth_date}, ${c.death_date}, ${c.is_author}, ${c.is_translator}, $owner);"
       .update.run.transact(h).unsafeRunSync()
   }
 
@@ -128,7 +133,7 @@ object DAO {
 
   def insertBookF(bF: BookF)(h: HikariTransactor[IO]): Unit =
     bF.chapters.foreach(ch => {
-      val r = insertChapter(ch)(h);
+      val r = insertChapter(ch)(h)
       logger.info(s"Inserting into book_c ${ch.book} chapter ${ch.id}, result: $r.")
     })
 
