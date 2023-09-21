@@ -13,16 +13,20 @@ import world.library.data.{Book, Creator, Metabook}
 
 object Routes {
 
-  def htmlRoutes(version: String)(xa: HikariTransactor[IO]): HttpRoutes[IO] = {
+  def htmlRoutes(xa: HikariTransactor[IO]): HttpRoutes[IO] = {
 
-    val books: List[Book] = getBooks(0)(xa).sortBy(_.metabook)
+    val books: List[Book] = getBooks()(xa).sortBy(_.metabook)
     val metabooks: List[Metabook] = getMetabooks(xa)
     val authors: List[Creator] = getAuthors(xa)
 
     HttpRoutes.of[IO] {
       case GET -> Root => Ok(Html(Index.template(books, metabooks, authors)))
-      case GET -> Root / "version" => Ok(version)
       case GET -> Root / IntVar(lbId) / IntVar(rbId) / IntVar(chId) => Ok(s"$lbId $rbId $chId")
     }
+  }
+
+  def techRoutes(version: String): HttpRoutes[IO] = HttpRoutes.of[IO] {
+    case GET -> Root / "check" => Ok()
+    case GET -> Root / "version" => Ok(version)
   }
 }
