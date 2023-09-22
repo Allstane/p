@@ -7,8 +7,9 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import DAO._
 import play.twirl.api.Html
-import world.library.templates.{BooksT, IndexT, BookT}
+import world.library.templates.{BookT, BooksT, IndexT, RegT}
 import org.http4s.twirl._
+import world.library.Main.logger
 import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
 
 object Routes {
@@ -34,6 +35,10 @@ object Routes {
         val chapters: List[Chapter] = getChapters(bid)
         val bookF: BookF = BookF(book, chapters)
         Ok(Html(BookT(bookF).currentHtml))
+      case GET -> Root / "regform" => Ok(Html(RegT.currentHtml))
+      case GET -> Root / "registration" =>
+        logger.info("regdata is touched")
+        Ok(Html(RegT.currentHtml))
     }
   }
 
