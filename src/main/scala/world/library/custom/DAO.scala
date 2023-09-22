@@ -24,24 +24,25 @@ object DAO {
   def getAuthor(id: Int)(h: HikariTransactor[IO]): IO[Option[Creator]] =
     sql"select * from creators where id = $id;".query[Creator].option.transact(h)
 
-  def getAuthors(h: HikariTransactor[IO]): List[Creator] =
+  def getAuthors(implicit h: HikariTransactor[IO]): List[Creator] =
     sql"select * from creators where is_author = true;".query[Creator].to[List].transact(h).unsafeRunSync()
 
-  def getChapters(bId: Int)(h: HikariTransactor[IO]): IO[List[Chapter]] =
-    sql"select id, book, title, head, txt from chapters where book = $bId order by id".query[Chapter].to[List].transact(h)
+  def getChapters(bId: Int)(implicit h: HikariTransactor[IO]): List[Chapter] =
+    sql"select id, book, title, head, txt from chapters where book = $bId order by id"
+      .query[Chapter].to[List].transact(h).unsafeRunSync()
 
   def getChapters(h: HikariTransactor[IO]): List[Chapter] =
     sql"select id, book, title, head, txt from chapters order by id"
       .query[Chapter].to[List].transact(h).unsafeRunSync()
 
-  def getChapter(chId: Int, bId: Int)(h: HikariTransactor[IO]): Option[Chapter] =
+  def getChapter(chId: Int, bId: Int)(implicit h: HikariTransactor[IO]): Option[Chapter] =
     sql"select * from chapters where book = $bId and id = $chId"
       .query[Chapter].option.transact(h).unsafeRunSync()
 
   def getBook(id: Int)(h: HikariTransactor[IO]): IO[Option[Book]] =
     sql"select * from books where id = $id;".query[Book].option.transact(h)
 
-  def getBooks(author: Int = 0)(h: HikariTransactor[IO]): List[Book] = {
+  def getBooks(author: Int = 0)(implicit h: HikariTransactor[IO]): List[Book] = {
     val query: Fragment = if (author == 0) sql"select * from books where is_visible = true"
     else sql"select * from books where metabook in (select id from metabooks where author = $author) and is_visible = true"
     query.query[Book].to[List].transact(h).unsafeRunSync()
@@ -70,8 +71,8 @@ object DAO {
         .update.run.transact(h).unsafeRunSync()
     else 0
 
-  def getBookF(id: Int)(h: HikariTransactor[IO]): IO[BookF] =
-    getBook(id)(h).flatMap(book => getChapters(id)(h).map(chapters => data.BookF(book, chapters)))
+  //def getBookF(id: Int)(h: HikariTransactor[IO]): IO[BookF] =
+  //  getBook(id)(h).flatMap(book => getChapters(id)(h).map(chapters => data.BookF(book, chapters)))
 
   def insertCreator(c: Creator, owner: Int)(h: HikariTransactor[IO]): Int = {
     logger.info(s"Owner: $owner $c")
@@ -141,7 +142,7 @@ object DAO {
     sql"insert into uploads (book, txt) values (${rt.book}, ${rt.txt})"
       .update.run.transact(h).unsafeRunSync()
 
-  def getMetabooks(h: HikariTransactor[IO]): List[Metabook] =
+  def getMetabooks(implicit h: HikariTransactor[IO]): List[Metabook] =
     sql"select * from metabooks where owner is null".query[Metabook].to[List].transact(h).unsafeRunSync()
 
   def getMetabookF(book: Int, isBook: Boolean = true)(h: HikariTransactor[IO]): IO[MetabookF] = {
