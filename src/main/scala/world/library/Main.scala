@@ -13,7 +13,6 @@ import world.library.custom.DAO._
 import org.slf4j.{Logger, LoggerFactory}
 import world.library.custom.Routes.{htmlRoutes, techRoutes}
 import world.library.data.util.Config
-
 import scala.concurrent.duration.DurationInt
 
 

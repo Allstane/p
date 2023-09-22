@@ -4,7 +4,7 @@ import world.library.data.BookF
 
 case class BookT(bookF: BookF) extends Template {
   val content: String = {
-    val table: String = s"<p align='center'> <table width='800' height='100%'> " +
+    val table: String = s"<p align='center'> <table width='800'> " +
       s"<tr> <td> ${bookF.book.title} </td> </tr>"
     val chapters: String = bookF.chapters.map( ch =>
       s"<tr> <td>${ch.title}</td> </tr>" +

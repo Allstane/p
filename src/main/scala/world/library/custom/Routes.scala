@@ -7,7 +7,7 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import DAO._
 import play.twirl.api.Html
-import world.library.templates.{Books, Index, BookT}
+import world.library.templates.{BooksT, IndexT, BookT}
 import org.http4s.twirl._
 import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
 
@@ -20,7 +20,7 @@ object Routes {
     val authors: List[Creator] = getAuthors(xa)
 
     HttpRoutes.of[IO] {
-      case GET -> Root => Ok(Html(Index(books, metabooks, authors).currentHtml))
+      case GET -> Root => Ok(Html(IndexT(books, metabooks, authors).currentHtml))
       case GET -> Root / IntVar(lbid) / IntVar(rbid) / IntVar(chid) =>
         val leftBook: Book = books.find(b => b.id == lbid).get
         val rightBook: Book = books.find(b => b.id == rbid).get
@@ -28,7 +28,7 @@ object Routes {
         val author: Creator = authors.find(a => a.id == metabook.author).get
         val leftChapter: Chapter = getChapter(chid, lbid)(xa).get
         val rightChapter: Chapter = getChapter(chid, rbid)(xa).get
-        Ok(Html(Books(leftBook, rightBook, metabook, author, leftChapter, rightChapter).currentHtml))
+        Ok(Html(BooksT(leftBook, rightBook, metabook, author, leftChapter, rightChapter).currentHtml))
       case GET -> Root / IntVar(bid) =>
         val book: Book = books.find(b => b.id == bid).get
         val chapters: List[Chapter] = getChapters(bid)(xa)
