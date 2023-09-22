@@ -29,6 +29,8 @@ object Routes {
         val leftChapter: Chapter = getChapter(chid, lbid)(xa).get
         val rightChapter: Chapter = getChapter(chid, rbid)(xa).get
         Ok(Html(Books(leftBook, rightBook, metabook, author, leftChapter, rightChapter).currentHtml))
+      case GET -> Root / IntVar(bid) =>
+        Ok(bid.toString)
     }
   }
 
