@@ -24,10 +24,10 @@ object DAO {
   def getAuthor(id: Int)(h: HikariTransactor[IO]): IO[Option[Creator]] =
     sql"select * from creators where id = $id;".query[Creator].option.transact(h)
 
-  def getAuthors(h: HikariTransactor[IO]): List[Creator] =
+  def getAuthors(implicit h: HikariTransactor[IO]): List[Creator] =
     sql"select * from creators where is_author = true;".query[Creator].to[List].transact(h).unsafeRunSync()
 
-  def getChapters(bId: Int)(h: HikariTransactor[IO]): List[Chapter] =
+  def getChapters(bId: Int)(implicit h: HikariTransactor[IO]): List[Chapter] =
     sql"select id, book, title, head, txt from chapters where book = $bId order by id"
       .query[Chapter].to[List].transact(h).unsafeRunSync()
 
@@ -35,7 +35,7 @@ object DAO {
     sql"select id, book, title, head, txt from chapters order by id"
       .query[Chapter].to[List].transact(h).unsafeRunSync()
 
-  def getChapter(chId: Int, bId: Int)(h: HikariTransactor[IO]): Option[Chapter] =
+  def getChapter(chId: Int, bId: Int)(implicit h: HikariTransactor[IO]): Option[Chapter] =
     sql"select * from chapters where book = $bId and id = $chId"
       .query[Chapter].option.transact(h).unsafeRunSync()
 
@@ -142,7 +142,7 @@ object DAO {
     sql"insert into uploads (book, txt) values (${rt.book}, ${rt.txt})"
       .update.run.transact(h).unsafeRunSync()
 
-  def getMetabooks(h: HikariTransactor[IO]): List[Metabook] =
+  def getMetabooks(implicit h: HikariTransactor[IO]): List[Metabook] =
     sql"select * from metabooks where owner is null".query[Metabook].to[List].transact(h).unsafeRunSync()
 
   def getMetabookF(book: Int, isBook: Boolean = true)(h: HikariTransactor[IO]): IO[MetabookF] = {
