@@ -7,15 +7,15 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import DAO._
 import play.twirl.api.Html
-import world.library.templates.{Books, Index}
+import world.library.templates.{Books, Index, BookT}
 import org.http4s.twirl._
-import world.library.data.{Book, Chapter, Creator, Metabook}
+import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
 
 object Routes {
 
-  def htmlRoutes(xa: HikariTransactor[IO]): HttpRoutes[IO] = {
+  def htmlRoutes(implicit xa: HikariTransactor[IO]): HttpRoutes[IO] = {
 
-    val books: List[Book] = getBooks()(xa).sortBy(_.metabook)
+    val books: List[Book] = getBooks().sortBy(_.metabook)
     val metabooks: List[Metabook] = getMetabooks(xa)
     val authors: List[Creator] = getAuthors(xa)
 
@@ -30,7 +30,10 @@ object Routes {
         val rightChapter: Chapter = getChapter(chid, rbid)(xa).get
         Ok(Html(Books(leftBook, rightBook, metabook, author, leftChapter, rightChapter).currentHtml))
       case GET -> Root / IntVar(bid) =>
-        Ok(bid.toString)
+        val book: Book = books.find(b => b.id == bid).get
+        val chapters: List[Chapter] = getChapters(bid)(xa)
+        val bookF: BookF = BookF(book, chapters)
+        Ok(Html(BookT(bookF).currentHtml))
     }
   }
 
