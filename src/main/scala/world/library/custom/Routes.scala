@@ -10,6 +10,9 @@ import play.twirl.api.Html
 import world.library.templates.{BookT, BooksT, IndexT, RegT}
 import org.http4s.twirl._
 import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
+import io.circe.generic.auto._
+import org.http4s.circe.CirceEntityCodec._
+import world.library.data.auth.RegData
 
 object Routes {
 
@@ -35,8 +38,8 @@ object Routes {
         val bookF: BookF = BookF(book, chapters)
         Ok(Html(BookT(bookF).currentHtml))
       case GET -> Root / "regform" => Ok(Html(RegT.currentHtml))
-      case POST -> Root / "registration" =>
-        Ok()
+      case request@POST -> Root / "registration" =>
+        request.as[RegData].flatMap(r => Ok(insertUser(r))  )
     }
   }
 

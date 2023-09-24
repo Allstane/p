@@ -124,7 +124,7 @@ object DAO {
   def getMetabooks(owner: Int)(h: HikariTransactor[IO]): IO[List[Metabook]] =
     sql"select * from metabooks where owner is null or owner = $owner".query[Metabook].to[List].transact(h)
 
-  def insertUser(r: RegData)(h: HikariTransactor[IO]): Int =
+  def insertUser(r: RegData)(implicit h: HikariTransactor[IO]): Int =
     sql"insert into users (login, firstname, surname, password, email, tg, favBooks, origlang, langs, location, token, role, ts) values (${r.login}, ${r.firstname}, ${r.surname}, ${r.password}, ${r.email}, ${r.tg}, ${r.favBooks}, ${r.origlang}, ${r.langs}, ${r.location}, '', 'Subscriber', '')"
       .update.run.transact(h).unsafeRunSync()
 

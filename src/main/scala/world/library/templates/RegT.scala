@@ -5,34 +5,32 @@ case object RegT extends Template {
     s"""
        |<script>
        |  function createJson() {
-       |  console.log('Start of a fun');
-       |    let loginForm = document.getElementById("regForm");
-       |    loginForm.addEventListener("submit", (e) => {
+       |    const regForm = document.getElementById("regForm");
+       |    regForm.addEventListener("submit", (e) => {
        |    e.preventDefault();
-       | // Получаем данные из формы
-       |  const formData = new FormData(regForm);
-       |
-       |  // Отправляем данные на сервер
-       |  fetch('/registration', {
-       |    method: 'POST',
-       |    body: formData,
-       |  })
-       |    .then((response) => {
-       |      // Обрабатываем ответ от сервера
-       |      console.log(response);
-       |    })
-       |    .catch((error) => {
-       |      // Обрабатываем ошибку
-       |      console.error(error);
-       |    });
-       |});
-       |  }
+       |    const formData = new FormData(regForm);
+       |    const l = formData.get('login');
+       |    const p = formData.get('password');
+       |    const em = formData.get('email');
+       |    const regs = {login: l, password: p, email: em, firstname: null,
+       |                  surname: null, tg: null, favBooks: null, origlang: null, langs: null, location: null}
+       |    const json = JSON.stringify(regs);
+       |    fetch('/registration', {
+       |      method: 'POST',
+       |      headers: {  'Content-Type': 'application/json' },
+       |      body: json }).then((response) => {  console.log(response);  })
+       |                                       });
+       |                            }
        |</script>
        |
        |<form id="regForm" action="/registration" method="get">
        |  <div>
-       |    <label for="name">Enter your name: </label>
-       |    <input type="text" name="name" id="name" required />
+       |    <label for="login">Enter your login: </label>
+       |    <input type="text" name="login" id="name" required />
+       |  </div>
+       |  <div>
+       |    <label for="password">Enter your pass: </label>
+       |    <input type="text" name="password" id="name" required />
        |  </div>
        |  <div>
        |    <label for="email">Enter your email: </label>
