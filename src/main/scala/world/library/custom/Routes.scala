@@ -7,9 +7,13 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import DAO._
 import play.twirl.api.Html
-import world.library.templates.{BooksT, IndexT, BookT}
+import world.library.templates.{BookT, BooksT, IndexT, RegT}
 import org.http4s.twirl._
 import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
+import io.circe.generic.auto._
+import org.http4s.circe.CirceEntityCodec._
+import world.library.custom.Helper.hasher
+import world.library.data.auth.RegData
 
 object Routes {
 
@@ -34,6 +38,9 @@ object Routes {
         val chapters: List[Chapter] = getChapters(bid)
         val bookF: BookF = BookF(book, chapters)
         Ok(Html(BookT(bookF).currentHtml))
+      case GET -> Root / "regform" => Ok(Html(RegT.currentHtml))
+      case request@POST -> Root / "registration" =>
+        request.as[RegData].flatMap(r => { Ok(insertUser(r.copy(password = hasher(r.password)))) } )
     }
   }
 
