@@ -48,12 +48,14 @@ object Routes {
   def privateRoutes(implicit xa: HikariTransactor[IO]): HttpRoutes[IO] = {
 
     var users: List[User] = getUsers
+    logger.info(users.toString())
 
     HttpRoutes.of[IO] {
 
       case request@POST -> Root / "registration" => request.as[RegData].flatMap(r => {
         val res = insertUser(r.copy(password = hasher(r.password)))
         if (res == 1) users = getUsers
+        logger.info(users.toString())
         Ok()
       })
       case request@POST -> Root / "authentication" => request.as[Credentials].flatMap(user => {

@@ -14,12 +14,12 @@ case object RegT extends Template {
        |    const p = formData.get('password');
        |    const em = formData.get('email');
        |    const regs = {login: l, password: p, email: em, firstname: null,
-       |                  surname: null, tg: null, favBooks: null, origlang: null, langs: null, location: null}
+       |                  surname: null, tg: null, favBooks: null, origlang: null, langs: null, location: null};
        |    const json = JSON.stringify(regs);
        |    fetch('/registration', {
        |      method: 'POST',
        |      headers: {  'Content-Type': 'application/json' },
-       |      body: json }).then((response) => {  console.log(response); location.href = "/1"; })
+       |      body: json }).then((response) => {  console.log(response); location.href = "/auth"; })
        |                                       });
        |                            }
        |</script>
@@ -38,7 +38,7 @@ case object RegT extends Template {
        |    <input type="email" name="email" id="email" required />
        |  </div>
        |  <div>
-       |    <input type="submit" onclick="createJson()" value="Subscribe!" />
+       |    <input type="submit" onclick="createJson()" value="Register" />
        |  </div>
        |</form>
        |""".stripMargin

@@ -12,7 +12,7 @@ case object AuthT extends Template {
        |    const formData = new FormData(authForm);
        |    const l = formData.get('login');
        |    const p = formData.get('password');
-       |    const creds = {login: l, password: p}
+       |    const creds = {login: l, password: p};
        |    const json = JSON.stringify(creds);
        |    fetch('/authentication', {
        |      method: 'POST',
@@ -22,7 +22,7 @@ case object AuthT extends Template {
        |                            }
        |</script>
        |
-       |<form id="regForm" action="/registration" method="get">
+       |<form id="authForm" action="/authentication" method="get">
        |  <div>
        |    <label for="login">Enter your login: </label>
        |    <input type="text" name="login" id="name" required />
@@ -32,11 +32,7 @@ case object AuthT extends Template {
        |    <input type="text" name="password" id="name" required />
        |  </div>
        |  <div>
-       |    <label for="email">Enter your email: </label>
-       |    <input type="email" name="email" id="email" required />
-       |  </div>
-       |  <div>
-       |    <input type="submit" onclick="createJson()" value="Subscribe!" />
+       |    <input type="submit" onclick="createJson()" value="Log in" />
        |  </div>
        |</form>
        |""".stripMargin
