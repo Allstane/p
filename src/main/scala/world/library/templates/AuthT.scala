@@ -1,25 +1,23 @@
 package world.library.templates
 
-case object RegT extends Template {
+case object AuthT extends Template {
 
   val content: String =
     s"""
        |<script>
        |  function createJson() {
-       |    const regForm = document.getElementById("regForm");
+       |    const regForm = document.getElementById("authForm");
        |    regForm.addEventListener("submit", (e) => {
        |    e.preventDefault();
-       |    const formData = new FormData(regForm);
+       |    const formData = new FormData(authForm);
        |    const l = formData.get('login');
        |    const p = formData.get('password');
-       |    const em = formData.get('email');
-       |    const regs = {login: l, password: p, email: em, firstname: null,
-       |                  surname: null, tg: null, favBooks: null, origlang: null, langs: null, location: null}
-       |    const json = JSON.stringify(regs);
-       |    fetch('/registration', {
+       |    const creds = {login: l, password: p}
+       |    const json = JSON.stringify(creds);
+       |    fetch('/authentication', {
        |      method: 'POST',
        |      headers: {  'Content-Type': 'application/json' },
-       |      body: json }).then((response) => {  console.log(response); location.href = "/1"; })
+       |      body: json }).then((response) => {  console.log(response); location.href = "/"; })
        |                                       });
        |                            }
        |</script>
