@@ -12,6 +12,7 @@ import org.http4s.twirl._
 import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
 import io.circe.generic.auto._
 import org.http4s.circe.CirceEntityCodec._
+import world.library.custom.Helper.hasher
 import world.library.data.auth.RegData
 
 object Routes {
@@ -39,7 +40,7 @@ object Routes {
         Ok(Html(BookT(bookF).currentHtml))
       case GET -> Root / "regform" => Ok(Html(RegT.currentHtml))
       case request@POST -> Root / "registration" =>
-        request.as[RegData].flatMap(r => Ok(insertUser(r))  )
+        request.as[RegData].flatMap(r => { Ok(insertUser(r.copy(password = hasher(r.password)))) } )
     }
   }
 
