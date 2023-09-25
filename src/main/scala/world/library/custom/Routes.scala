@@ -7,7 +7,7 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import DAO._
 import play.twirl.api.Html
-import world.library.templates.{AuthT, BookT, BooksT, IndexT, RegT}
+import world.library.templates.{AuthT, BookT, BooksT, IndexT, PrivateT, RegT}
 import org.http4s.twirl._
 import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
 import io.circe.generic.auto._
@@ -48,24 +48,27 @@ object Routes {
   def privateRoutes(implicit xa: HikariTransactor[IO]): HttpRoutes[IO] = {
 
     var users: List[User] = getUsers
-    logger.info(users.toString())
 
     HttpRoutes.of[IO] {
 
       case request@POST -> Root / "registration" => request.as[RegData].flatMap(r => {
         val res = insertUser(r.copy(password = hasher(r.password)))
         if (res == 1) users = getUsers
-        logger.info(users.toString())
         Ok()
       })
       case request@POST -> Root / "authentication" => request.as[Credentials].flatMap(user => {
         val founded: Option[User] = ifUserExists(users, user)
         founded match {
-          case Some(user) => logger.info(s"${user.login} is logged in.")
-          case None => logger.info(s"${user.login} tries to log in with a wrong password.")
+          case Some(user) =>
+            logger.info(s"${user.login} is logged in.")
+            Ok(Html(PrivateT.currentHtml))
+          case None =>
+            logger.info(s"${user.login} tries to log in with a wrong password.")
+            BadRequest()
         }
-        Ok()
+
       })
+      case GET -> Root / "private" => Ok(Html(PrivateT.currentHtml))
 
     }
   }

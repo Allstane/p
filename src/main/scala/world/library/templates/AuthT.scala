@@ -17,9 +17,9 @@ case object AuthT extends Template {
        |    fetch('/authentication', {
        |      method: 'POST',
        |      headers: {  'Content-Type': 'application/json' },
-       |      body: json }).then((response) => {  console.log(response); location.href = "/"; })
-       |                                       });
-       |                            }
+       |      body: json }).then((response) => {  if (response.status == '200') location.href = '/private';
+       |                                          else location.href = '/'; })
+       |                                       }); }
        |</script>
        |
        |<form id="authForm" action="/authentication" method="get">

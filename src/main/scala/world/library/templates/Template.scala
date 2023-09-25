@@ -11,7 +11,7 @@ trait Template {
        |<header align='center'> Alefowl.com: bilingual books </p>
        |$content
        |<p align='center'> </p>
-       |<footer>About Vacancies Policies</footer>
+       |<footer>About Vacancies Policies <a href='/auth'>Login</a> <a href='/regform'>Registration</a></footer>
        |</body>
        |</html>
        |""".stripMargin

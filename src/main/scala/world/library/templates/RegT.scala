@@ -19,9 +19,7 @@ case object RegT extends Template {
        |    fetch('/registration', {
        |      method: 'POST',
        |      headers: {  'Content-Type': 'application/json' },
-       |      body: json }).then((response) => {  console.log(response); location.href = "/auth"; })
-       |                                       });
-       |                            }
+       |      body: json }).then((response) => {  location.href = '/auth'; })   });  }
        |</script>
        |
        |<form id="regForm" action="/registration" method="get">
