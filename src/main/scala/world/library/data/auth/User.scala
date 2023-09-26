@@ -3,6 +3,8 @@ package world.library.data.auth
 import cats.effect.IO
 import org.http4s.Request
 import org.typelevel.ci.CIString
+import world.library.custom.Helper.hasher
+
 import java.time
 import scala.util.Random
 
@@ -13,7 +15,7 @@ case class User(id: Int, login: String, password: String, token: String, role: S
 object User {
 
   def ifUserExists(users: List[User], user: Credentials): Option[User] =
-    users.find(t => t.login == user.login && t.password == user.password) match {
+    users.find(t => t.login == user.login && t.password == hasher(user.password)) match {
       case Some(u) => Option(u.copy(id = 0, password = "", ts = time.LocalDateTime.now().toString))
       case None => None
     }

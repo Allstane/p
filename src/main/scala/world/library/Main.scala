@@ -11,8 +11,9 @@ import pureconfig.generic.auto._
 import pureconfig.ConfigSource
 import world.library.custom.DAO._
 import org.slf4j.{Logger, LoggerFactory}
-import world.library.custom.Routes.{htmlRoutes, techRoutes}
+import world.library.custom.Routes.{htmlRoutes, privateRoutes, techRoutes}
 import world.library.data.util.Config
+
 import scala.concurrent.duration.DurationInt
 
 
@@ -34,7 +35,7 @@ object Main extends IOApp {
       .withAllowMethodsIn(Set(Method.GET, Method.POST))
       .withAllowCredentials(false)
       .withMaxAge(1.day)
-      .apply((htmlRoutes(xa) <+> techRoutes(version)).orNotFound)
+      .apply((htmlRoutes(xa) <+> privateRoutes(xa) <+> techRoutes(version)).orNotFound)
 
     EmberServerBuilder.default[IO].withHost(Host.fromString(config.host).get).withPort(Port.fromInt(config.port).get)
       .withHttpApp(corsService).build.use(_ => IO.never).as(ExitCode.Success)
