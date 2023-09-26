@@ -180,6 +180,6 @@ object DAO {
   def getTags(metabook: Int)(h: HikariTransactor[IO]): IO[List[Tag]] =
     sql"select * from tags where id in (select id from tag_chapters where metabook = $metabook)".query[Tag].to[List].transact(h)
 
-  def getUsers(h: HikariTransactor[IO]): List[User] =
+  def getUsers(implicit h: HikariTransactor[IO]): List[User] =
     sql"select id, login, password, token, role, ts from users".query[User].to[List].transact(h).unsafeRunSync()
 }
