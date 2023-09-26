@@ -17,6 +17,7 @@ object Openpdf {
     doc.addCreator("Alefowl.com")
     doc.addAuthor(book.author)
   }
+
   def createPdfSingleBook(bookF: BookF): Unit = {
 
     def insertChapter(doc: Document, chapter: Chapter, titleFont: Font): Boolean = {
@@ -33,10 +34,10 @@ object Openpdf {
 
     val myPDFDoc = new Document()
 
-    val pdfOutputFile = new FileOutputStream(s"/Users/kapinuss/IdeaProjects/lib-back/books/${book.id}.pdf")
+    val pdfOutputFile = new FileOutputStream(s"/Users/kapinuss/IdeaProjects/lib-view/books/${book.id}.pdf")
     //val baos = new ByteArrayOutputStream();
 
-    val pdfWriter = PdfWriter.getInstance(myPDFDoc, pdfOutputFile)
+    val pdfWriter: PdfWriter = PdfWriter.getInstance(myPDFDoc, pdfOutputFile)
 
     myPDFDoc.open()
 
@@ -79,7 +80,7 @@ object Openpdf {
 
     putPdfMetadata(myPDFDoc, book)
 
-    val pdfOutputFile = new FileOutputStream(s"/Users/kapinuss/IdeaProjects/lib-back/books/${book.id}.pdf")
+    val pdfOutputFile = new FileOutputStream(s"/Users/kapinuss/IdeaProjects/lib-view/books/${book.id}.pdf")
 
     val pdfWriter = PdfWriter.getInstance(myPDFDoc, pdfOutputFile)
 

@@ -14,6 +14,7 @@ import io.circe.generic.auto._
 import org.http4s.circe.CirceEntityCodec._
 import world.library.Main.logger
 import world.library.custom.Helper.hasher
+import world.library.custom.Openpdf.createPdfSingleBook
 import world.library.data.auth.User.ifUserExists
 import world.library.data.auth.{Credentials, RegData, User}
 
@@ -42,6 +43,7 @@ object Routes {
         Ok(Html(BookT(bookF).currentHtml))
       case GET -> Root / "regform" => Ok(Html(RegT.currentHtml))
       case GET -> Root / "auth" => Ok(Html(AuthT.currentHtml))
+      case GET -> Root / "pdf" / IntVar(book) => getBookF(book).map(bookF => Ok(createPdfSingleBook(bookF))).get
     }
   }
 

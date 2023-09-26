@@ -39,8 +39,8 @@ object DAO {
     sql"select * from chapters where book = $bId and id = $chId"
       .query[Chapter].option.transact(h).unsafeRunSync()
 
-  def getBook(id: Int)(h: HikariTransactor[IO]): IO[Option[Book]] =
-    sql"select * from books where id = $id;".query[Book].option.transact(h)
+  def getBook(id: Int)(h: HikariTransactor[IO]): Option[Book] =
+    sql"select * from books where id = $id;".query[Book].option.transact(h).unsafeRunSync()
 
   def getBooks(author: Int = 0)(implicit h: HikariTransactor[IO]): List[Book] = {
     val query: Fragment = if (author == 0) sql"select * from books where is_visible = true"
@@ -71,8 +71,8 @@ object DAO {
         .update.run.transact(h).unsafeRunSync()
     else 0
 
-  //def getBookF(id: Int)(h: HikariTransactor[IO]): IO[BookF] =
-  //  getBook(id)(h).flatMap(book => getChapters(id)(h).map(chapters => data.BookF(book, chapters)))
+  def getBookF(id: Int)(implicit h: HikariTransactor[IO]): Option[BookF] =
+    getBook(id)(h).map(book => BookF(book, getChapters(id)))
 
   def insertCreator(c: Creator, owner: Int)(h: HikariTransactor[IO]): Int = {
     logger.info(s"Owner: $owner $c")
