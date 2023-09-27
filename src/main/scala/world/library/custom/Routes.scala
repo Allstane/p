@@ -44,7 +44,10 @@ object Routes {
         Ok(Html(BookT(bookF).currentHtml))
       case GET -> Root / "regform" => Ok(Html(RegT.currentHtml))
       case GET -> Root / "auth" => Ok(Html(AuthT.currentHtml))
-      case GET -> Root / "pdf" / IntVar(book) => getBookF(book).map(bookF => Ok(createPdfSingleBook(bookF))).get
+      case GET -> Root / "pdf" / IntVar(book) => getBookF(book) match {
+        case Some(bookF: BookF) => Ok(createPdfSingleBook(bookF).toString)
+        case None => NotFound()
+      }
     }
   }
 

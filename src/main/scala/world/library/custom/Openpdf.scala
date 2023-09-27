@@ -18,7 +18,7 @@ object Openpdf {
     doc.addAuthor(book.author)
   }
 
-  def createPdfSingleBook(bookF: BookF): Unit = {
+  def createPdfSingleBook(bookF: BookF): Document = {
 
     def insertChapter(doc: Document, chapter: Chapter, titleFont: Font): Boolean = {
       val paragraph1 = new Paragraph(chapter.title, titleFont)
@@ -59,6 +59,8 @@ object Openpdf {
     myPDFDoc.close()
 
     pdfWriter.close()
+
+    myPDFDoc
   }
 
   def createPdfDoubleBook(b1: BookF, b2: BookF): IO[Unit] = IO {
