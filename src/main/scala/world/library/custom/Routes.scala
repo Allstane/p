@@ -9,7 +9,7 @@ import DAO._
 import play.twirl.api.Html
 import world.library.templates.{AuthT, BookT, BooksT, IndexT, PrivateT, RegT}
 import org.http4s.twirl._
-import world.library.data.{Book, BookF, Chapter, Creator, Metabook}
+import world.library.data.{Book, BookF, Chapter, Creator, Metabook, MetabookF}
 import io.circe.generic.auto._
 import org.http4s.circe.CirceEntityCodec._
 import world.library.Main.logger
@@ -32,10 +32,11 @@ object Routes {
         val leftBook: Book = books.find(b => b.id == lbid).get
         val rightBook: Book = books.find(b => b.id == rbid).get
         val metabook: Metabook = metabooks.find(m => m.id == leftBook.metabook).get
-        val author: Creator = authors.find(a => a.id == metabook.author).get
+        val theseBooks: List[Book] = books.filter(_.metabook == metabook.id)
+        val metabookF = MetabookF(metabook, theseBooks)
         val leftChapter: Chapter = getChapter(chid, lbid).get
         val rightChapter: Chapter = getChapter(chid, rbid).get
-        Ok(Html(BooksT(leftBook, rightBook, metabook, author, leftChapter, rightChapter).currentHtml))
+        Ok(Html(BooksT(leftBook, rightBook, metabookF, leftChapter, rightChapter).currentHtml))
       case GET -> Root / IntVar(bid) =>
         val book: Book = books.find(b => b.id == bid).get
         val chapters: List[Chapter] = getChapters(bid)
