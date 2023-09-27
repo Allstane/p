@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
   .settings(
     organization := "world.library",
     name := "lib-view",
-    version := "0.0.5",
+    version := "0.0.6",
     scalaVersion := "2.13.11",
     libraryDependencies ++= Seq(
       "org.http4s"      %% "http4s-ember-server" % Http4sVersion,
